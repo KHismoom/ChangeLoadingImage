@@ -1,0 +1,4 @@
+[submodule "OptionsFramework"]
+	path = OptionsFramework
+	url = git@github.com:bloodypenguin/OptionsFramework.git
+	branch = customization/ChangeLoadingImage
