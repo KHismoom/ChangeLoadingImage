@@ -53,13 +53,14 @@
     <Reference Include="ColossalManaged">
       <HintPath>D:\SteamLibrary\SteamApps\common\Cities_Skylines\Cities_Data\Managed\ColossalManaged.dll</HintPath>
     </Reference>
+    <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>$(SolutionDir)packages\Lib.Harmony.1.2.0.1\lib\net35\0Harmony.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="RedirectionHelper.cs" />
-    <Compile Include="ReflectionUtils.cs" />
     <Compile Include="LoadingExtension.cs" />
-    <Compile Include="LoadingAnimationDetour.cs" />
+    <Compile Include="LoadingAnimationPatch.cs" />
     <Compile Include="ChangeLoadingImageMod.cs" />
     <Compile Include="ImgurImages.cs" />
     <Compile Include="ImageListEntry.cs" />
@@ -70,11 +71,13 @@
     <Content Include="ClassicImages\North Loading Image.png" />
     <Content Include="ClassicImages\Sunny Loading Image.png" />
     <Content Include="ClassicImages\Tropical Loading Image.png" />
+    <Content Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if not exist "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)" mkdir "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"
 xcopy /y "$(TargetPath)" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"
+xcopy /y "$(TargetDir)\0Harmony.dll" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"
 xcopy /y "$(ProjectDir)\ClassicImages" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)" /s /e</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -2,62 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Reflection;
+using Harmony;
 using UnityEngine;
 using Random = System.Random;
 
 namespace ChangeLoadingImage
 {
-    public class LoadingAnimationDetour : MonoBehaviour
+    [HarmonyPatch(typeof(LoadingAnimation), "SetImage")]
+    public class LoadingAnimationPatch
     {
-        #region variables
 
-        RedirectCallsState redirectCallsState;
-        private bool deployed;
-
-        #endregion
-
-        public void Deploy()
-        {
-            if (deployed)
-            {
-                return;
-            }
-
-            redirectCallsState = RedirectionHelper.RedirectCalls(
-                typeof(LoadingAnimation).GetMethod("SetImage", BindingFlags.Public | BindingFlags.Instance),
-                typeof(LoadingAnimationDetour).GetMethod("SetImage", BindingFlags.Public | BindingFlags.Instance));
-            deployed = true;
-        }
-
-        private void Revert()
-        {
-            if (!deployed)
-            {
-                return;
-            }
-
-            RedirectionHelper.RevertRedirect(
-                typeof(LoadingAnimation).GetMethod("SetImage", BindingFlags.Public | BindingFlags.Instance),
-                redirectCallsState);
-            deployed = false;
-        }
-
-        #region redirection
-
-        #endregion
-
-        public void SetImage(Mesh mesh, Material material, float scale, bool showAnimation)
+        public static void Prefix(LoadingAnimation __instance, Mesh mesh, ref Material material, ref float scale, bool showAnimation)
         {
             try
             {
-                var newTexture = GetRandomImgurImage(true);
-                var newScale = getScaleFactor(newTexture);
-                var newMaterial = new Material(material) {mainTexture = newTexture};
-                SetImageOriginal(mesh, newMaterial, newScale, showAnimation);
+                var newTexture = GetRandomImgurImage(false);
+                scale = getScaleFactor(newTexture);
+                material = new Material(material) {mainTexture = newTexture};
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                SetImageOriginal(mesh, material, scale, showAnimation);
+                UnityEngine.Debug.LogException(e);
             }
         }
 
@@ -95,18 +60,6 @@ namespace ChangeLoadingImage
             throw new Exception("Failed to load an image from imgur");
         }
 
-        private void SetImageOriginal(Mesh mesh, Material material, float scale, bool showAnimation)
-        {
-            var loadingAnimation = LoadingManager.instance.LoadingAnimationComponent;
-
-            ReflectionUtils.WritePrivate<LoadingAnimation>(loadingAnimation, "m_imageMesh", mesh);
-            ReflectionUtils.WritePrivate<LoadingAnimation>(loadingAnimation, "m_imageMaterial", new Material(material));
-            ReflectionUtils.WritePrivate<LoadingAnimation>(loadingAnimation, "m_imageScale", scale);
-            ReflectionUtils.WritePrivate<LoadingAnimation>(loadingAnimation, "m_imageShowAnimation", showAnimation);
-            ReflectionUtils.WritePrivate<LoadingAnimation>(loadingAnimation, "m_imageLoaded", true);
-            ReflectionUtils.WritePrivate<LoadingAnimation>(loadingAnimation, "m_imageAlpha", 0.0f);
-        }
-
         private static ImageListEntry SelectFrom(IList<ImageListEntry> entries)
         {
             if (entries.Count == 0)
@@ -115,8 +68,6 @@ namespace ChangeLoadingImage
             var random = new Random();
             return entries[random.Next(entries.Count)];
         }
-
-        #region handle specific image sources
 
         private static Texture HandleHttp(string uri)
         {
@@ -130,10 +81,6 @@ namespace ChangeLoadingImage
 
             return bg;
         }
-
-        #endregion
-
-        #region utilities
 
         private static float getScaleFactor(Texture texture)
         {
@@ -163,7 +110,5 @@ namespace ChangeLoadingImage
 
             return scaleFactor;
         }
-
-        #endregion
     }
 }
