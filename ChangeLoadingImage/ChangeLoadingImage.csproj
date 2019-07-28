@@ -61,7 +61,7 @@
     <Compile Include="LoadingExtension.cs" />
     <Compile Include="LoadingAnimationDetour.cs" />
     <Compile Include="ChangeLoadingImageMod.cs" />
-    <Compile Include="ImageList.cs" />
+    <Compile Include="ImgurImages.cs" />
     <Compile Include="ImageListEntry.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>

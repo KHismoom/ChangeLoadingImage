@@ -48,10 +48,9 @@ namespace ChangeLoadingImage
 
         public void SetImage(Mesh mesh, Material material, float scale, bool showAnimation)
         {
-
             try
             {
-                var newTexture = getImageForEnvironment();
+                var newTexture = GetRandomImgurImage(true);
                 var newScale = getScaleFactor(newTexture);
                 var newMaterial = new Material(material) {mainTexture = newTexture};
                 SetImageOriginal(mesh, newMaterial, newScale, showAnimation);
@@ -62,20 +61,22 @@ namespace ChangeLoadingImage
             }
         }
 
-        private static Texture getImageForEnvironment()
+        private static Texture GetClassicImageForEnvironment()
         {
             var env = SimulationManager.instance.m_metaData.m_environment;
             var fileName = $"{Util.AssemblyDirectory}/{env} Loading Image.png";
-            return Util.LoadTextureFromFile( fileName);
+            return Util.LoadTextureFromFile(fileName);
         }
-        
-        private static Texture getRandomImgurImage()
+
+        private static Texture GetRandomImgurImage(bool fromPredefinedList)
         {
             var attempt = 0;
             while (attempt < 10)
             {
                 ++attempt;
-                var entry = getRandomEntry();
+                var pageNumber = new Random().Next(10);
+                var entries = fromPredefinedList ? ImgurImages.DefaultImageList : ImgurImages.ImageListFromImgur(pageNumber);
+                var entry = SelectFrom(entries);
                 if (entry == null)
                 {
                     throw new Exception("No entry was selected");
@@ -104,13 +105,6 @@ namespace ChangeLoadingImage
             ReflectionUtils.WritePrivate<LoadingAnimation>(loadingAnimation, "m_imageShowAnimation", showAnimation);
             ReflectionUtils.WritePrivate<LoadingAnimation>(loadingAnimation, "m_imageLoaded", true);
             ReflectionUtils.WritePrivate<LoadingAnimation>(loadingAnimation, "m_imageAlpha", 0.0f);
-        }
-
-        private static ImageListEntry getRandomEntry()
-        {
-            var pageNumber = new Random().Next(10);
-            var entries = ImageList.imageListFromImgur(pageNumber);
-            return SelectFrom(entries);
         }
 
         private static ImageListEntry SelectFrom(IList<ImageListEntry> entries)
