@@ -47,6 +47,9 @@
     <Reference Include="ICities">
       <HintPath>D:\SteamLibrary\SteamApps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <HintPath>C:\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\System.Xml.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>D:\SteamLibrary\SteamApps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
@@ -64,6 +67,23 @@
     <Compile Include="ChangeLoadingImageMod.cs" />
     <Compile Include="ImgurImages.cs" />
     <Compile Include="ImageListEntry.cs" />
+    <Compile Include="OptionsFramework\Attributes\AbstractOptionsAttribute.cs" />
+    <Compile Include="OptionsFramework\Attributes\ButtonAttribute.cs" />
+    <Compile Include="OptionsFramework\Attributes\CheckboxAttribute.cs" />
+    <Compile Include="OptionsFramework\Attributes\DontTranslateDescriptionAttribute.cs" />
+    <Compile Include="OptionsFramework\Attributes\DropDownAttribute.cs" />
+    <Compile Include="OptionsFramework\Attributes\DropDownEntry.cs" />
+    <Compile Include="OptionsFramework\Attributes\DynamicDropDownAttribute.cs" />
+    <Compile Include="OptionsFramework\Attributes\EnumDropDownAttribute.cs" />
+    <Compile Include="OptionsFramework\Attributes\HideConditionAttribute.cs" />
+    <Compile Include="OptionsFramework\Attributes\LabelAttribute.cs" />
+    <Compile Include="OptionsFramework\Attributes\SliderAttribute.cs" />
+    <Compile Include="OptionsFramework\Attributes\TextFieldAttribute.cs" />
+    <Compile Include="OptionsFramework\Attributes\XmlOptionsAttribute.cs" />
+    <Compile Include="OptionsFramework\Extensions\CommonExtensions.cs" />
+    <Compile Include="OptionsFramework\Extensions\UIHelperBaseExtensions.cs" />
+    <Compile Include="OptionsFramework\IOptionsWrapper.cs" />
+    <Compile Include="OptionsFramework\XmlOptionsWrapper.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
