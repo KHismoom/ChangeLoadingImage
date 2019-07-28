@@ -60,7 +60,7 @@
     <Compile Include="ReflectionUtils.cs" />
     <Compile Include="LoadingExtension.cs" />
     <Compile Include="LoadingAnimationDetour.cs" />
-    <Compile Include="Mod.cs" />
+    <Compile Include="ChangeLoadingImageMod.cs" />
     <Compile Include="ImageList.cs" />
     <Compile Include="ImageListEntry.cs" />
   </ItemGroup>
