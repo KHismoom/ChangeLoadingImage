@@ -71,5 +71,31 @@ namespace ChangeLoadingImage
             tex.Apply(false, readOnly);
             return tex;
         }
+        
+        public static Type FindType(string classFullName)
+        {
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                try
+                {
+                    var types = assembly.GetTypes();
+                    foreach (var type in types.Where(type => type.FullName == classFullName))
+                    {
+                        return type;
+                    }
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
+            return null;
+        }
+        
+        public static bool IsModActive(ulong modId)
+        {
+            var plugins = PluginManager.instance.GetPluginsInfo();
+            return plugins.Any(p => p != null && p.isEnabled && p.publishedFileID.AsUInt64 == modId);
+        }
     }
 }
