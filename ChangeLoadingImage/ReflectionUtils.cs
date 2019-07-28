@@ -13,9 +13,10 @@ namespace ChangeLoadingImage
             foreach (FieldInfo f in fields) {
                 if (f.Name == fieldName) {
                     f.SetValue (o, value);
-                    break;
+                    return;
                 }
             }
+            throw new Exception($"Field {fieldName} wasn't found!");
         }
 
         public static T getReflectedValue<T, T2> (string fieldname, T2 obj)

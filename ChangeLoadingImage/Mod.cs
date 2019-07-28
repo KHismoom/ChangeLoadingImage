@@ -4,16 +4,8 @@ namespace ChangeLoadingImage
 {
     public class Mod : IUserMod
     {
-        public string Name {
-            get {
-                return "ChangeLoadingImage";
-            }
-        }
+        public string Name => "ChangeLoadingImage";
 
-        public string Description {
-            get {
-                return "Changes the loading image.";
-            }
-        }
+        public string Description => "Changes the loading image.";
     }
 }

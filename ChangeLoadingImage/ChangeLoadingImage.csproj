@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -56,15 +56,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Blur.cs" />
-    <Compile Include="Detours.cs" />
+    <Compile Include="RedirectionHelper.cs" />
     <Compile Include="ReflectionUtils.cs" />
-    <Compile Include="Loader.cs" />
-    <Compile Include="Redirector.cs" />
+    <Compile Include="LoadingExtension.cs" />
+    <Compile Include="LoadingAnimationDetour.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="ImageList.cs" />
     <Compile Include="ImageListEntry.cs" />
-    <Compile Include="LoadingImageContainer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if not exist "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)" mkdir "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"
+xcopy /y "$(TargetPath)" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

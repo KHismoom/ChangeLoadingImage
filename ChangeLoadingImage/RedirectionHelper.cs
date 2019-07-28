@@ -20,31 +20,22 @@ THE SOFTWARE.
 
 using System;
 using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace ChangeLoadingImage
 {
-    
-    public struct RedirectCallsState
+
+    public class RedirectCallsState
     {
         public byte a, b, c, d, e;
         public ulong f;
     }
-    
+
     /// <summary>
     /// Helper class to deal with detours. This version is for Unity 5 x64 on Windows.
     /// We provide three different methods of detouring.
     /// </summary>
     public static class RedirectionHelper
     {
-        // Note: These two DllImports are really only used in the alternative methods
-        // for detouring.
-        [DllImport("mono.dll", CallingConvention = CallingConvention.FastCall, EntryPoint = "mono_domain_get")]
-        private static extern IntPtr mono_domain_get();
-        
-        [DllImport("mono.dll", CallingConvention = CallingConvention.FastCall, EntryPoint = "mono_method_get_header")]
-        private static extern IntPtr mono_method_get_header(IntPtr method);
-        
         /// <summary>
         /// Redirects all calls from method 'from' to method 'to'.
         /// </summary>
@@ -57,34 +48,28 @@ namespace ChangeLoadingImage
             var fptr2 = to.MethodHandle.GetFunctionPointer();
             return PatchJumpTo(fptr1, fptr2);
         }
-        
+
         public static void RevertRedirect(MethodInfo from, RedirectCallsState state)
         {
             var fptr1 = from.MethodHandle.GetFunctionPointer();
             RevertJumpTo(fptr1, state);
         }
-        
+
         /// <summary>
         /// Primitive patching. Inserts a jump to 'target' at 'site'. Works even if both methods'
         /// callers have already been compiled.
         /// </summary>
         /// <param name="site"></param>
         /// <param name="target"></param>
-        private static RedirectCallsState PatchJumpTo(IntPtr site, IntPtr target)
+        public static RedirectCallsState PatchJumpTo(IntPtr site, IntPtr target)
         {
-            RedirectCallsState state = new RedirectCallsState();
-            
+            RedirectCallsState state;
             // R11 is volatile.
             unsafe
             {
                 byte* sitePtr = (byte*)site.ToPointer();
-                state.a = *sitePtr;
-                state.b = *(sitePtr + 1);
-                state.c = *(sitePtr + 10);
-                state.d = *(sitePtr + 11);
-                state.e = *(sitePtr + 12);
-                state.f = *((ulong*)(sitePtr + 2));
-                
+                state = GetState(sitePtr);
+
                 *sitePtr = 0x49; // mov r11, target
                 *(sitePtr + 1) = 0xBB;
                 *((ulong*)(sitePtr + 2)) = (ulong)target.ToInt64();
@@ -92,15 +77,30 @@ namespace ChangeLoadingImage
                 *(sitePtr + 11) = 0xFF;
                 *(sitePtr + 12) = 0xE3;
             }
-            
             return state;
         }
-        
-        private static void RevertJumpTo(IntPtr site, RedirectCallsState state)
+
+        private static unsafe RedirectCallsState GetState(byte* sitePtr)
         {
+            var state = new RedirectCallsState
+            {
+                a = *sitePtr,
+                b = *(sitePtr + 1),
+                c = *(sitePtr + 10),
+                d = *(sitePtr + 11),
+                e = *(sitePtr + 12),
+                f = *((ulong*) (sitePtr + 2))
+            };
+            return state;
+        }
+
+        public static RedirectCallsState RevertJumpTo(IntPtr site, RedirectCallsState state)
+        {
+            RedirectCallsState detourState;
             unsafe
             {
                 byte* sitePtr = (byte*)site.ToPointer();
+                detourState = GetState(sitePtr);
                 *sitePtr = state.a; // mov r11, target
                 *(sitePtr + 1) = state.b;
                 *((ulong*)(sitePtr + 2)) = state.f;
@@ -108,7 +108,8 @@ namespace ChangeLoadingImage
                 *(sitePtr + 11) = state.d;
                 *(sitePtr + 12) = state.e;
             }
+            return detourState;
         }
-        
+
     }
 }
