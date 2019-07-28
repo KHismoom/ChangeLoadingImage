@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Reflection;
+using ChangeLoadingImage.OptionsFramework;
 using Harmony;
 using UnityEngine;
 using Random = System.Random;
@@ -11,18 +11,36 @@ namespace ChangeLoadingImage
     [HarmonyPatch(typeof(LoadingAnimation), "SetImage")]
     public class LoadingAnimationPatch
     {
-
-        public static void Prefix(LoadingAnimation __instance, Mesh mesh, ref Material material, ref float scale, bool showAnimation)
+        public static void Prefix(LoadingAnimation __instance, Mesh mesh, ref Material material, ref float scale,
+            bool showAnimation)
         {
             try
             {
-                var newTexture = GetRandomImgurImage(false);
+                Texture newTexture;
+                var mode = (ImageType)XmlOptionsWrapper<Settings>.Options.Mode;
+                switch (mode)
+                {
+                    case ImageType.ClassicEnvironmentImage:
+                        if (SimulationManager.instance.m_metaData.m_environment == "Winter")
+                        {
+                            return;
+                        }
+
+                        newTexture = GetClassicImageForEnvironment();
+                        break;
+                    case ImageType.RandomImageFromImgur:
+                        newTexture = GetRandomImgurImage(false);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
                 scale = getScaleFactor(newTexture);
                 material = new Material(material) {mainTexture = newTexture};
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogException(e);
+                Debug.LogException(e);
             }
         }
 
@@ -40,7 +58,9 @@ namespace ChangeLoadingImage
             {
                 ++attempt;
                 var pageNumber = new Random().Next(10);
-                var entries = fromPredefinedList ? ImgurImages.DefaultImageList : ImgurImages.ImageListFromImgur(pageNumber);
+                var entries = fromPredefinedList
+                    ? ImgurImages.DefaultImageList
+                    : ImgurImages.ImageListFromImgur(pageNumber);
                 var entry = SelectFrom(entries);
                 if (entry == null)
                 {

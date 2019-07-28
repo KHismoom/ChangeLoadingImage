@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Text.RegularExpressions;
-using UnityEngine;
 
 namespace ChangeLoadingImage
 {
@@ -19,7 +18,6 @@ namespace ChangeLoadingImage
                 var matchValue = match.Value;
                 var index = matchValue.IndexOf("<div id=\"");
                 var str = matchValue.Substring(index + 9, 7);
-                Debug.LogWarning($"http://i.imgur.com/{str}.jpg");
                 entries.Add(new ImageListEntry($"http://i.imgur.com/{str}.jpg"));
             }
 

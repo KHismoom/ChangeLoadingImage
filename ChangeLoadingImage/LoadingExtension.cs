@@ -1,4 +1,3 @@
-using System;
 using System.Net;
 using System.Net.Security;
 using System.Reflection;
@@ -18,7 +17,7 @@ namespace ChangeLoadingImage
             HarmonyInstance = HarmonyInstance.Create("github.com/bloodypenguin/ChangeLoadingImage");
             HarmonyInstance.PatchAll(Assembly.GetExecutingAssembly()); 
         }
-        
+
         public override void OnReleased()
         {
             ServicePointManager.ServerCertificateValidationCallback -= Callback;

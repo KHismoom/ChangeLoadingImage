@@ -67,6 +67,8 @@
     <Compile Include="ChangeLoadingImageMod.cs" />
     <Compile Include="ImgurImages.cs" />
     <Compile Include="ImageListEntry.cs" />
+    <Compile Include="ImageType.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="OptionsFramework\Attributes\AbstractOptionsAttribute.cs" />
     <Compile Include="OptionsFramework\Attributes\ButtonAttribute.cs" />
     <Compile Include="OptionsFramework\Attributes\CheckboxAttribute.cs" />
