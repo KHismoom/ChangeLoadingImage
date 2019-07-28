@@ -63,10 +63,18 @@
     <Compile Include="ChangeLoadingImageMod.cs" />
     <Compile Include="ImageList.cs" />
     <Compile Include="ImageListEntry.cs" />
+    <Compile Include="Util.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ClassicImages\Europe Loading Image.png" />
+    <Content Include="ClassicImages\North Loading Image.png" />
+    <Content Include="ClassicImages\Sunny Loading Image.png" />
+    <Content Include="ClassicImages\Tropical Loading Image.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if not exist "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)" mkdir "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"
-xcopy /y "$(TargetPath)" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"</PostBuildEvent>
+xcopy /y "$(TargetPath)" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"
+xcopy /y "$(ProjectDir)\ClassicImages" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)" /s /e</PostBuildEvent>
   </PropertyGroup>
 </Project>

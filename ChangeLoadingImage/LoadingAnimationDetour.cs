@@ -48,9 +48,10 @@ namespace ChangeLoadingImage
 
         public void SetImage(Mesh mesh, Material material, float scale, bool showAnimation)
         {
+
             try
             {
-                var newTexture = getRandomImgurImage();
+                var newTexture = getImageForEnvironment();
                 var newScale = getScaleFactor(newTexture);
                 var newMaterial = new Material(material) {mainTexture = newTexture};
                 SetImageOriginal(mesh, newMaterial, newScale, showAnimation);
@@ -61,6 +62,13 @@ namespace ChangeLoadingImage
             }
         }
 
+        private static Texture getImageForEnvironment()
+        {
+            var env = SimulationManager.instance.m_metaData.m_environment;
+            var fileName = $"{Util.AssemblyDirectory}/{env} Loading Image.png";
+            return Util.LoadTextureFromFile( fileName);
+        }
+        
         private static Texture getRandomImgurImage()
         {
             var attempt = 0;
