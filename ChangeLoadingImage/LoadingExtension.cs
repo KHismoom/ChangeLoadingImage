@@ -29,7 +29,7 @@ namespace ChangeLoadingImage
                 var loadingScreenModType = Util.FindType("LoadingScreenMod.LoadingScreen");
                 if (loadingScreenModType != null)
                 {
-                    if (Util.IsModActive(667342976) || Util.IsModActive(833779378))
+                    if (Util.IsModActive(667342976) || Util.IsModActive(833779378) || Util.IsModActive(2731207699))
                     {
                         Debug.LogWarning("LoadingScreenMod was detected as active. Applying workaround...");
                         return loadingScreenModType.GetMethod("SetImage", BindingFlags.Instance | BindingFlags.Public);
