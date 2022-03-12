@@ -2,7 +2,8 @@ using System;
 using System.Net;
 using System.Net.Security;
 using System.Reflection;
-using Harmony;
+using CitiesHarmony.API;
+using HarmonyLib;
 using ICities;
 using UnityEngine;
 
@@ -10,13 +11,18 @@ namespace ChangeLoadingImage
 {
     public class LoadingExtension : LoadingExtensionBase
     {
-        private HarmonyInstance HarmonyInstance;
+        private Harmony HarmonyInstance;
         private RemoteCertificateValidationCallback Callback = (sender, cert, chain, sslPolicyErrors) => true;
 
         public override void OnCreated(ILoading loading)
         {
+            base.OnCreated(loading);
+            if (!HarmonyHelper.IsHarmonyInstalled)
+            {
+                return;
+            }
             ServicePointManager.ServerCertificateValidationCallback += Callback;
-            HarmonyInstance = HarmonyInstance.Create("github.com/bloodypenguin/ChangeLoadingImage");
+            HarmonyInstance = new Harmony("github.com/bloodypenguin/ChangeLoadingImage");
             var original = GetOriginal();
             var prefix = typeof(LoadingAnimationPatch).GetMethod("Prefix", BindingFlags.Static | BindingFlags.Public);
             HarmonyInstance.Patch(original, new HarmonyMethod(prefix));
@@ -55,6 +61,11 @@ namespace ChangeLoadingImage
 
         public override void OnReleased()
         {
+            base.OnReleased();
+            if (!HarmonyHelper.IsHarmonyInstalled)
+            {
+                return;
+            }
             ServicePointManager.ServerCertificateValidationCallback -= Callback;
             HarmonyInstance?.UnpatchAll();
         }

@@ -1,5 +1,6 @@
 using ChangeLoadingImage.OptionsFramework;
 using ChangeLoadingImage.OptionsFramework.Extensions;
+using CitiesHarmony.API;
 using ICities;
 namespace ChangeLoadingImage
 {
@@ -15,6 +16,10 @@ namespace ChangeLoadingImage
             {
                 uiComponent.width = 700;
             }
+        }
+        
+        public void OnEnabled() {
+            HarmonyHelper.EnsureHarmonyInstalled();
         }
     }
 }
